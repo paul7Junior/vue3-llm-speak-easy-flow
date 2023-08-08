@@ -11,7 +11,7 @@
                     :class="['list-item', 'expanding-content', { 'indexzero': index === 0 }, { 'indexone': index === 1 }]"
                     @input="(event) => { updateText(event); resizeInput(index); }" @keyup.enter="submit"
                     @transitionend="handleTransitionEnd">
-                 {{ conversation[index] }} 
+                {{ conversation[index] }} 
                 </div>
 
                 
@@ -74,6 +74,12 @@ onMounted(() => {
     content: '\a0';
 }
 
+.list-item br {
+  line-height: 0;
+  height: 0;
+  content: "";
+  display: none; /* You could also try setting display to none */
+}
 
 .list-enter-active,
 .list-leave-active {
