@@ -4,14 +4,17 @@
         <div class="top-middle-container">
             <transition-group name="list">
 
-                <div v-for="(item, index) in divs" :contenteditable=isReadOnly[index] :key="item"
+                <div v-for="(item, index) in divs" 
+                    :contenteditable=isReadOnly[index] 
+                    :key="item"
                     :ref="el => inputRefs[index] = el"
                     :class="['list-item', 'expanding-content', { 'indexzero': index === 0 }, { 'indexone': index === 1 }]"
                     @input="(event) => { updateText(event); resizeInput(index); }" @keyup.enter="submit"
                     @transitionend="handleTransitionEnd">
-                    {{ conversation[index] }}
+                 {{ conversation[index] }} 
                 </div>
 
+                
             </transition-group>
             <span class="input-measure" ref="measure">{{ conversation[index] }}</span>
         </div>
@@ -24,7 +27,7 @@ import { ref, nextTick, onMounted } from 'vue';
 
 const divs = ref(['a', 'b']);
 const isReadOnly = ref(['false', 'true']);
-const conversation = ref(['What can I get you aaaaaaaaaaaaaaaaaaaa?', '']);
+const conversation = ref(['What can I get you?', '']);
 const inputRefs = ref([]);
 const MAX_WIDTH = 300;
 
