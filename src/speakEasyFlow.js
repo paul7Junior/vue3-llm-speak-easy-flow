@@ -1,4 +1,4 @@
-import component from './speakEasyFlow2.vue'
+import component from './speakEasyFlow.vue'
 
 export default {
     install: (app, options) => {

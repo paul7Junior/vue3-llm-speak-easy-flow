@@ -1,9 +1,19 @@
 <template>
+
+<div 
+        class="scroll-container" 
+        @mouseover="enableScroll" 
+        @mouseleave="disableScroll" 
+        :style="{ bottom: currentBottomInVh + 'vh', width: MAX_WIDTH_VW+'vw' }"
+        ref="content">
+
+        <div class="bottom-sticky" :style="{ height: VISIBLE_HEIGHT_VH + 'vh' }">
+
+            <!-- :style="{ maxWidth: MAX_WIDTH_VW+'vw' }"      -->
         <div class="main-container">
             <div class="center-wrapper">
-                <div class="top-middle-container">
+                <div ref="groupConv">
                     <transition-group name="list">
-
                         <div v-for="(item, index) in divs" :contenteditable=isReadOnly[index] :key="item"
                             :ref="el => inputRefs[index] = el"
                             :class="['list-item', 'expanding-content', { 'indexzero': index === 0 }, { 'indexone': index === 1 }]"
@@ -11,24 +21,32 @@
                             @transitionend="handleTransitionEnd">
                             {{ conversation[index] }}
                         </div>
-
-
                     </transition-group>
                     <span class="input-measure" ref="measure">{{ conversation[index] }}</span>
                 </div>
             </div>
         </div>
+
+
+    </div>
+    </div>
 </template>
       
 <script setup>
-import { ref, nextTick, onMounted } from 'vue';
-import { NButton } from 'naive-ui'
+import { ref, nextTick, onMounted, onUnmounted } from 'vue';
 
 const divs = ref(['a', 'b']);
 const isReadOnly = ref(['false', 'true']);
 const conversation = ref(['What can I get you?', '']);
 const inputRefs = ref([]);
-const MAX_WIDTH = 300;
+const MAX_WIDTH_VW = ref(50);
+
+
+const VISIBLE_HEIGHT_VH = ref(15)
+const currentBottomInVh = ref(100 - VISIBLE_HEIGHT_VH.value);
+const content = ref(null);
+const groupConv = ref(null);
+let scrolling = false;
 
 const updateText = (event) => {
     conversation.value = [conversation.value[0], event.target.textContent];
@@ -37,11 +55,12 @@ const updateText = (event) => {
 const submit = () => {
     divs.value = [divs.value[1], divs.value[0]];
     conversation.value = [conversation.value[1], '']
-    console.log('conversation', conversation.value)
+    inputRefs.value[0].style.height = '30px'
 };
 
 const handleTransitionEnd = () => {
     inputRefs.value[1].focus();
+    // inputRefs.value[1].style.height = '30px'
 };
 
 const measure = ref(null);
@@ -52,26 +71,119 @@ const resizeInput = (index) => {
         if (inputEl) {
             inputEl.style.height = 'auto';
             inputEl.style.height = `${inputEl.scrollHeight}px`;
+
+            let currentVh = convertPxToVh(groupConv.value.offsetHeight)
+            console.log('currentVh--- ', currentVh)
+            if (currentVh > VISIBLE_HEIGHT_VH.value) {
+                currentBottomInVh.value = 100 - currentVh
+                content.value.style.bottom = (100 - currentVh) +'vh'
+            }
         }
     });
 };
 
+function convertPxToVh(pxValue) {
+  const viewportHeight = window.innerHeight;
+  return (pxValue / viewportHeight) * 100;
+}
 
-const active = ref(false)
-const placement = ref('top')
-const activate = (place) => {
-    active.value = true
+function convertVhToPx(vHValue) {
+  const viewportHeight = window.innerHeight;
+  return vHValue/100*viewportHeight
 }
 
 
 onMounted(() => {
     inputRefs.value[1].focus();
+    window.addEventListener('wheel', handleScroll);
+    
 })
+
+onUnmounted(() => {
+    window.removeEventListener('wheel', handleScroll);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+const enableScroll = () => {
+    scrolling = true;
+};
+
+const disableScroll = () => {
+    scrolling = false;
+};
+
+const handleScroll = (event) => {
+    if (scrolling && content.value) {
+        const delta = event.deltaY;
+        currentBottomInVh.value -= delta * 0.1;
+        currentBottomInVh.value = Math.max(10, Math.min(currentBottomInVh.value, 100 - VISIBLE_HEIGHT_VH.value));
+        content.value.style.bottom = `${currentBottomInVh.value}vh`;
+    }
+};
+
 
 
 </script>
       
 <style>
+
+.expanding-content {
+    z-index: 999999999999;
+    border: 0px solid #ccc;
+    overflow: visible;
+    outline: none;
+}
+
+
+.main-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    min-width: 30vw;
+    /* min-height: 20vh; */
+    backdrop-filter: blur(10px);
+}
+
+.center-wrapper {
+    display: flex;
+    justify-content: center;
+    max-width: 100%;
+}
+
+.scroll-container {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    overflow: hidden;
+    background-color: grey;
+}
+
+.bottom-sticky {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.indexzero {
+    text-align: center;
+}
 
 .list-item {
     transition: transform 1s;
@@ -94,46 +206,5 @@ onMounted(() => {
     transition: all 2s ease;
 }
 
-.list-enter-from,
-.list-leave-to {
-    opacity: 0;
-    /* transform: translateX(30px); */
-}
 
-.indexzero {
-    text-align: center;
-}
-
-.expanding-content {
-    z-index: 999999999999;
-    border: 0px solid #ccc;
-    overflow: visible;
-    outline: none;
-}
-
-
-.main-container {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    padding: 10px;
-    border-radius: 5px;
-    max-width: 60vw;
-    min-width: 40vw;
-    min-height: 20vh;
-    backdrop-filter: blur(10px);
-}
-
-.center-wrapper {
-    display: flex;
-    justify-content: center;
-    max-width: 100%;
-}
-
-.top-middle-container {
-    z-index: 1000;
-    padding: 10px;
-}
 </style>
