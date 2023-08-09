@@ -14,7 +14,8 @@
             <div class="center-wrapper">
                 <div ref="groupConv">
                     <transition-group name="list">
-                        <div v-for="(item, index) in divs" :contenteditable=isReadOnly[index] :key="item"
+                        <div v-for="(item, index) in divs" :contenteditable=isReadOnly[index] 
+                            :key="item"
                             :ref="el => inputRefs[index] = el"
                             :class="['list-item', 'expanding-content', { 'indexzero': index === 0 }, { 'indexone': index === 1 }]"
                             @input="(event) => { updateText(event); resizeInput(index); }" @keyup.enter="submit"
@@ -47,6 +48,7 @@ const currentBottomInVh = ref(100 - VISIBLE_HEIGHT_VH.value);
 const content = ref(null);
 const groupConv = ref(null);
 let scrolling = false;
+const measure = ref(null);
 
 const updateText = (event) => {
     conversation.value = [conversation.value[0], event.target.textContent];
@@ -55,15 +57,13 @@ const updateText = (event) => {
 const submit = () => {
     divs.value = [divs.value[1], divs.value[0]];
     conversation.value = [conversation.value[1], '']
+    console.log('inputRefs.value[0]', inputRefs.value[0])
     inputRefs.value[0].style.height = '30px'
 };
 
 const handleTransitionEnd = () => {
     inputRefs.value[1].focus();
-    // inputRefs.value[1].style.height = '30px'
 };
-
-const measure = ref(null);
 
 const resizeInput = (index) => {
     nextTick(() => {
@@ -73,10 +73,10 @@ const resizeInput = (index) => {
             inputEl.style.height = `${inputEl.scrollHeight}px`;
 
             let currentVh = convertPxToVh(groupConv.value.offsetHeight)
-            console.log('currentVh--- ', currentVh)
             if (currentVh > VISIBLE_HEIGHT_VH.value) {
-                currentBottomInVh.value = 100 - currentVh
-                content.value.style.bottom = (100 - currentVh) +'vh'
+                currentBottomInVh.value = 100 - currentVh - 3
+                VISIBLE_HEIGHT_VH.value = 100 - currentBottomInVh.value
+                content.value.style.bottom = (100 - currentVh - 3) +'vh'
             }
         }
     });
@@ -87,16 +87,9 @@ function convertPxToVh(pxValue) {
   return (pxValue / viewportHeight) * 100;
 }
 
-function convertVhToPx(vHValue) {
-  const viewportHeight = window.innerHeight;
-  return vHValue/100*viewportHeight
-}
-
-
 onMounted(() => {
     inputRefs.value[1].focus();
     window.addEventListener('wheel', handleScroll);
-    
 })
 
 onUnmounted(() => {
