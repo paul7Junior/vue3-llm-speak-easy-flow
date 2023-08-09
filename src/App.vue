@@ -1,9 +1,12 @@
 <script setup>
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
+// import SpeakEasyFLow from './speakEasyFlow.vue'
+
 </script>
 
-<template style="background:blue!important">
+<template>
+  <!-- <SpeakEasyFLow></SpeakEasyFLow> -->
 <speak-easy-flow></speak-easy-flow>
  <div class="wrapper">
   

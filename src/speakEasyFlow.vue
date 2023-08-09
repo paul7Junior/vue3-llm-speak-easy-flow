@@ -1,29 +1,28 @@
 <template>
-    <div class="main-container">
-        <div class="center-wrapper">
-        <div class="top-middle-container">
-            <transition-group name="list">
+        <div class="main-container">
+            <div class="center-wrapper">
+                <div class="top-middle-container">
+                    <transition-group name="list">
 
-                <div v-for="(item, index) in divs" 
-                    :contenteditable=isReadOnly[index] 
-                    :key="item"
-                    :ref="el => inputRefs[index] = el"
-                    :class="['list-item', 'expanding-content', { 'indexzero': index === 0 }, { 'indexone': index === 1 }]"
-                    @input="(event) => { updateText(event); resizeInput(index); }" @keyup.enter="submit"
-                    @transitionend="handleTransitionEnd">
-                {{ conversation[index] }} 
+                        <div v-for="(item, index) in divs" :contenteditable=isReadOnly[index] :key="item"
+                            :ref="el => inputRefs[index] = el"
+                            :class="['list-item', 'expanding-content', { 'indexzero': index === 0 }, { 'indexone': index === 1 }]"
+                            @input="(event) => { updateText(event); resizeInput(index); }" @keyup.enter="submit"
+                            @transitionend="handleTransitionEnd">
+                            {{ conversation[index] }}
+                        </div>
+
+
+                    </transition-group>
+                    <span class="input-measure" ref="measure">{{ conversation[index] }}</span>
                 </div>
-
-                
-            </transition-group>
-            <span class="input-measure" ref="measure">{{ conversation[index] }}</span>
+            </div>
         </div>
-    </div>
-    </div>
 </template>
       
 <script setup>
 import { ref, nextTick, onMounted } from 'vue';
+import { NButton } from 'naive-ui'
 
 const divs = ref(['a', 'b']);
 const isReadOnly = ref(['false', 'true']);
@@ -43,7 +42,6 @@ const submit = () => {
 
 const handleTransitionEnd = () => {
     inputRefs.value[1].focus();
-    // inputRefs.value[1].style.height = 'auto'; 
 };
 
 const measure = ref(null);
@@ -58,6 +56,14 @@ const resizeInput = (index) => {
     });
 };
 
+
+const active = ref(false)
+const placement = ref('top')
+const activate = (place) => {
+    active.value = true
+}
+
+
 onMounted(() => {
     inputRefs.value[1].focus();
 })
@@ -66,6 +72,7 @@ onMounted(() => {
 </script>
       
 <style>
+
 .list-item {
     transition: transform 1s;
 }
@@ -75,10 +82,11 @@ onMounted(() => {
 }
 
 .list-item br {
-  line-height: 0;
-  height: 0;
-  content: "";
-  display: none; /* You could also try setting display to none */
+    line-height: 0;
+    height: 0;
+    content: "";
+    display: none;
+    /* You could also try setting display to none */
 }
 
 .list-enter-active,
@@ -105,28 +113,27 @@ onMounted(() => {
 
 
 .main-container {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  padding: 10px;
-  border-radius: 5px;
-  max-width: 60vw;
-  min-width: 40vw;
-  min-height: 20vh;
-  backdrop-filter: blur(10px);
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 60vw;
+    min-width: 40vw;
+    min-height: 20vh;
+    backdrop-filter: blur(10px);
 }
 
 .center-wrapper {
-  display: flex;
-  justify-content: center;
-  max-width: 100%;
+    display: flex;
+    justify-content: center;
+    max-width: 100%;
 }
 
 .top-middle-container {
-  z-index: 1000;
-  padding: 10px;
+    z-index: 1000;
+    padding: 10px;
 }
-
 </style>
