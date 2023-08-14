@@ -9,10 +9,9 @@
 
         <div class="bottom-sticky" :style="{ height: VISIBLE_HEIGHT_VH + 'vh' }">
 
-            <!-- :style="{ maxWidth: MAX_WIDTH_VW+'vw' }"      -->
-        <div class="main-container">
+        <div ref="groupConv" class="main-container">
             <div class="center-wrapper">
-                <div ref="groupConv">
+                <div ref="groupConvOld">
                     <transition-group name="list">
                         <div v-for="(item, index) in divs" :contenteditable=isReadOnly[index] 
                             :key="item"
@@ -22,8 +21,9 @@
                             @transitionend="handleTransitionEnd">
                             {{ conversation[index] }}
                         </div>
+                        <span class="input-measure" ref="measure">{{ conversation[index] }}</span>
                     </transition-group>
-                    <span class="input-measure" ref="measure">{{ conversation[index] }}</span>
+                    
                 </div>
             </div>
         </div>
@@ -31,6 +31,7 @@
 
     </div>
     </div>
+    <button @click="gg">fffff</button>
 </template>
       
 <script setup>
@@ -38,7 +39,7 @@ import { ref, nextTick, onMounted, onUnmounted } from 'vue';
 
 const divs = ref(['a', 'b']);
 const isReadOnly = ref(['false', 'true']);
-const conversation = ref(['What can I get you?', '']);
+const conversation = ref(['', '']);
 const inputRefs = ref([]);
 const MAX_WIDTH_VW = ref(50);
 
@@ -49,37 +50,44 @@ const content = ref(null);
 const groupConv = ref(null);
 let scrolling = false;
 const measure = ref(null);
+const initialLineHeight = ref(null)
 
 const updateText = (event) => {
     conversation.value = [conversation.value[0], event.target.textContent];
 };
 
+
 const submit = () => {
+    // inputRefs.value[0].style.borderBottom = '0'
+    // inputRefs.value[1].style.borderBottom = '0'
     divs.value = [divs.value[1], divs.value[0]];
     conversation.value = [conversation.value[1], '']
-    console.log('inputRefs.value[0]', inputRefs.value[0])
-    inputRefs.value[0].style.height = '30px'
+    inputRefs.value[0].style.height = initialLineHeight.value    
+    updateVisibleHeightAndBottom()
 };
+
+const updateVisibleHeightAndBottom = () => {
+    let currentHeightContainer = convertPxToVh(groupConv.value.offsetHeight)
+    currentBottomInVh.value = 100 - currentHeightContainer - 3
+    VISIBLE_HEIGHT_VH.value = 100 - currentBottomInVh.value
+    content.value.style.bottom = currentBottomInVh.value + 'vh'
+}
 
 const handleTransitionEnd = () => {
     inputRefs.value[1].focus();
+    // inputRefs.value[0].style.borderBottom = '2px solid #d4af37'
+    // inputRefs.value[1].style.borderBottom = '2px solid #d4af37'
 };
 
 const resizeInput = (index) => {
-    nextTick(() => {
+    // nextTick(() => {
         const inputEl = inputRefs.value[index];
         if (inputEl) {
             inputEl.style.height = 'auto';
             inputEl.style.height = `${inputEl.scrollHeight}px`;
-
-            let currentVh = convertPxToVh(groupConv.value.offsetHeight)
-            if (currentVh > VISIBLE_HEIGHT_VH.value) {
-                currentBottomInVh.value = 100 - currentVh - 3
-                VISIBLE_HEIGHT_VH.value = 100 - currentBottomInVh.value
-                content.value.style.bottom = (100 - currentVh - 3) +'vh'
-            }
+            updateVisibleHeightAndBottom()
         }
-    });
+    // });
 };
 
 function convertPxToVh(pxValue) {
@@ -90,6 +98,9 @@ function convertPxToVh(pxValue) {
 onMounted(() => {
     inputRefs.value[1].focus();
     window.addEventListener('wheel', handleScroll);
+    updateVisibleHeightAndBottom()
+    console.log('inputRefs.value[0].style.height', inputRefs.value[0].style.height)
+    initialLineHeight.value = inputRefs.value[0].style.height
 })
 
 onUnmounted(() => {
@@ -150,6 +161,7 @@ const handleScroll = (event) => {
     min-width: 30vw;
     /* min-height: 20vh; */
     backdrop-filter: blur(10px);
+    
 }
 
 .center-wrapper {
@@ -164,7 +176,8 @@ const handleScroll = (event) => {
     left: 50%;
     transform: translateX(-50%);
     overflow: hidden;
-    background-color: grey;
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid #d4af37;
 }
 
 .bottom-sticky {
@@ -176,10 +189,19 @@ const handleScroll = (event) => {
 
 .indexzero {
     text-align: center;
+    margin-bottom: 10px;
 }
+
+.indexone {
+    /* border-bottom: 2px solid #d4af37; */
+    /* min-width: 25vw; */
+}
+
+
 
 .list-item {
     transition: transform 1s;
+    height: 24px;
 }
 
 .list-item:empty:before {

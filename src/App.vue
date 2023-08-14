@@ -6,23 +6,26 @@ import TheWelcome from './components/TheWelcome.vue'
 </script>
 
 <template>
+  <div style="position: absolute;top:0;left:0">
+
+    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
+    dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsd</div>
+    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
+    dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsd</div>
+    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
+    dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsd</div>
+    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
+    dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsd</div>
+    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
+    dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsd</div>
+    
+  </div>
   <!-- <SpeakEasyFLow></SpeakEasyFLow> -->
 <speak-easy-flow></speak-easy-flow>
  <div class="wrapper">
-  
+  dfdsfds
 </div>
 
-  <!-- <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main> -->
 </template>
 
 <style scoped>
