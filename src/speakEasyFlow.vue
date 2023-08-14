@@ -6,6 +6,10 @@
         @mouseleave="disableScroll" 
         :style="{ bottom: currentBottomInVh + 'vh', width: MAX_WIDTH_VW+'vw' }"
         ref="content">
+        
+        <div id="historicalConversation" class="top-div">
+<historicalConversations></historicalConversations>
+        </div>
 
         <div class="bottom-sticky" :style="{ height: VISIBLE_HEIGHT_VH + 'vh' }">
 
@@ -36,6 +40,8 @@
       
 <script setup>
 import { ref, nextTick, onMounted, onUnmounted } from 'vue';
+import historicalConversations from './components/HistoricalConversation.vue'
+
 
 const divs = ref(['a', 'b']);
 const isReadOnly = ref(['false', 'true']);
@@ -52,6 +58,9 @@ const groupConv = ref(null);
 let scrolling = false;
 const measure = ref(null);
 const initialLineHeight = ref(null)
+const showHistoricalConversation = ref(false)
+
+// const historicalConversations = ref(['aaaaa', 'gggggg', 'jjjjjjj'])
 
 const updateText = (event) => {
     conversation.value = [conversation.value[0], event.target.textContent];
@@ -98,7 +107,6 @@ onMounted(() => {
     inputRefs.value[1].focus();
     window.addEventListener('wheel', handleScroll);
     updateVisibleHeightAndBottom()
-    console.log('inputRefs.value[0].style.height', inputRefs.value[0].style.height)
     initialLineHeight.value = inputRefs.value[0].style.height
 })
 
@@ -122,6 +130,14 @@ const handleScroll = (event) => {
         currentBottomInVh.value += delta * 0.1;
         currentBottomInVh.value = Math.max(10, Math.min(currentBottomInVh.value, 100 - VISIBLE_HEIGHT_VH.value));
         content.value.style.bottom = `${currentBottomInVh.value}vh`;
+        console.log('currentBottomInVh.value', currentBottomInVh.value)
+        if (currentBottomInVh.value >= 100 - VISIBLE_HEIGHT_VH.value) {
+            console.log('touch top')
+            hasBeenManuallyScrolled.value = false
+        } else {
+
+        }
+        
     }
 };
 
@@ -173,6 +189,15 @@ const handleScroll = (event) => {
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+.top-div {
+  position: absolute;
+  bottom: 100px;
+  left: 0;
+  right: 0;
+  /* height: 50px;  */
+  /* background-color: blue; */
 }
 
 .indexzero {
