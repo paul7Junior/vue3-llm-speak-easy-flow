@@ -42,6 +42,7 @@ const isReadOnly = ref(['false', 'true']);
 const conversation = ref(['', '']);
 const inputRefs = ref([]);
 const MAX_WIDTH_VW = ref(50);
+const hasBeenManuallyScrolled = ref(false);
 
 
 const VISIBLE_HEIGHT_VH = ref(15)
@@ -67,27 +68,25 @@ const submit = () => {
 };
 
 const updateVisibleHeightAndBottom = () => {
-    let currentHeightContainer = convertPxToVh(groupConv.value.offsetHeight)
-    currentBottomInVh.value = 100 - currentHeightContainer - 3
-    VISIBLE_HEIGHT_VH.value = 100 - currentBottomInVh.value
-    content.value.style.bottom = currentBottomInVh.value + 'vh'
+    if (!hasBeenManuallyScrolled.value) {
+        let currentHeightContainer = convertPxToVh(groupConv.value.offsetHeight)
+        currentBottomInVh.value = 100 - currentHeightContainer - 3
+        VISIBLE_HEIGHT_VH.value = 100 - currentBottomInVh.value
+        content.value.style.bottom = currentBottomInVh.value + 'vh'   
+    }
 }
 
 const handleTransitionEnd = () => {
     inputRefs.value[1].focus();
-    // inputRefs.value[0].style.borderBottom = '2px solid #d4af37'
-    // inputRefs.value[1].style.borderBottom = '2px solid #d4af37'
 };
 
 const resizeInput = (index) => {
-    // nextTick(() => {
         const inputEl = inputRefs.value[index];
         if (inputEl) {
             inputEl.style.height = 'auto';
             inputEl.style.height = `${inputEl.scrollHeight}px`;
             updateVisibleHeightAndBottom()
         }
-    // });
 };
 
 function convertPxToVh(pxValue) {
@@ -108,16 +107,6 @@ onUnmounted(() => {
 });
 
 
-
-
-
-
-
-
-
-
-
-
 const enableScroll = () => {
     scrolling = true;
 };
@@ -128,14 +117,13 @@ const disableScroll = () => {
 
 const handleScroll = (event) => {
     if (scrolling && content.value) {
+        hasBeenManuallyScrolled.value = true
         const delta = event.deltaY;
-        currentBottomInVh.value -= delta * 0.1;
+        currentBottomInVh.value += delta * 0.1;
         currentBottomInVh.value = Math.max(10, Math.min(currentBottomInVh.value, 100 - VISIBLE_HEIGHT_VH.value));
         content.value.style.bottom = `${currentBottomInVh.value}vh`;
     }
 };
-
-
 
 </script>
       
