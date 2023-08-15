@@ -1,7 +1,7 @@
-import component from './speakEasyFlow.vue'
+import SpeakEasy from './speakEasyFlow.vue'
 
 export default {
-    install: (app, options) => {
-        app.component("speak-easy-flow", component);
+    install(app, options) {
+        app.component("SpeakEasy", SpeakEasy);
     }
-  }
+}

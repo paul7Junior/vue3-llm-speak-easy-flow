@@ -1,45 +1,37 @@
 <template>
+    <div class="scroll-container" @click="scrollContainerClick" @mouseover="enableScroll" @mouseleave="disableScroll"
+        :class="{ 'no-transition': isWheelEventTriggered }"
+        :style="{ bottom: currentBottomInVh + 'vh', width: MAX_WIDTH_VW + 'vw' }" ref="content">
 
-<div 
-        class="scroll-container" 
-        @mouseover="enableScroll" 
-        @mouseleave="disableScroll" 
-        :style="{ bottom: currentBottomInVh + 'vh', width: MAX_WIDTH_VW+'vw' }"
-        ref="content">
-        
-        <div id="historicalConversation" class="top-div">
-<historicalConversations></historicalConversations>
+        <div id="historicalConversation" class="top-div" :style="{ bottom: VISIBLE_HEIGHT_VH + 'vh' }">
+            <historicalConversations ref="historicalConv" :touchDown="touchDown" :toArchive="toArchive" @message-sent="scrollTouch"></historicalConversations>
         </div>
 
         <div class="bottom-sticky" :style="{ height: VISIBLE_HEIGHT_VH + 'vh' }">
-
-        <div ref="groupConv" class="main-container">
-            <div class="center-wrapper">
-                <div ref="groupConvOld">
-                    <transition-group name="list">
-                        <div v-for="(item, index) in divs" :contenteditable=isReadOnly[index] 
-                            :key="item"
-                            :ref="el => inputRefs[index] = el"
-                            :class="['list-item', 'expanding-content', { 'indexzero': index === 0 }, { 'indexone': index === 1 }]"
-                            @input="(event) => { updateText(event); resizeInput(index); }" @keyup.enter="submit"
-                            @transitionend="handleTransitionEnd">
-                            {{ conversation[index] }}
-                        </div>
-                        <span class="input-measure" ref="measure">{{ conversation[index] }}</span>
-                    </transition-group>
-                    
+            <div ref="groupConv" class="main-container">
+                <div class="center-wrapper">
+                    <div>
+                        <transition-group name="list">
+                            <div v-for="(item, index) in divs" :contenteditable=isReadOnly[index] :key="item"
+                                :ref="el => inputRefs[index] = el"
+                                :class="['list-item', 'expanding-content', { 'indexzero': index === 0 }, { 'indexone': index === 1 }]"
+                                @input="(event) => { updateText(event); resizeInput(index); }" @keyup.enter="submit"
+                                @transitionend="handleTransitionEnd">
+                                {{ conversation[index] }}
+                            </div>
+                            <span style="height: 0;" ref="measure">{{ conversation[index] }}</span>
+                        </transition-group>
+                    </div>
                 </div>
             </div>
         </div>
 
 
     </div>
-    </div>
-    <button @click="gg">fffff</button>
 </template>
       
 <script setup>
-import { ref, nextTick, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
 import historicalConversations from './components/HistoricalConversation.vue'
 
 
@@ -51,37 +43,39 @@ const MAX_WIDTH_VW = ref(50);
 const hasBeenManuallyScrolled = ref(false);
 
 
-const VISIBLE_HEIGHT_VH = ref(15)
+const VISIBLE_HEIGHT_VH = ref(5)
 const currentBottomInVh = ref(100 - VISIBLE_HEIGHT_VH.value);
 const content = ref(null);
 const groupConv = ref(null);
 let scrolling = false;
 const measure = ref(null);
 const initialLineHeight = ref(null)
-const showHistoricalConversation = ref(false)
+const touchDown = ref(false)
+const toArchive = ref('')
+const isWheelEventTriggered = ref(false);
 
-// const historicalConversations = ref(['aaaaa', 'gggggg', 'jjjjjjj'])
+const historicalConv = ref()
+
 
 const updateText = (event) => {
     conversation.value = [conversation.value[0], event.target.textContent];
 };
 
-
 const submit = () => {
-    // inputRefs.value[0].style.borderBottom = '0'
-    // inputRefs.value[1].style.borderBottom = '0'
     divs.value = [divs.value[1], divs.value[0]];
+    console.log('conversation.value[0]', conversation.value[0])
+    toArchive.value = conversation.value[1]
     conversation.value = [conversation.value[1], '']
-    inputRefs.value[0].style.height = initialLineHeight.value    
+    inputRefs.value[0].style.height = initialLineHeight.value
     updateVisibleHeightAndBottom()
 };
 
 const updateVisibleHeightAndBottom = () => {
     if (!hasBeenManuallyScrolled.value) {
         let currentHeightContainer = convertPxToVh(groupConv.value.offsetHeight)
-        currentBottomInVh.value = 100 - currentHeightContainer - 3
+        currentBottomInVh.value = 100 - currentHeightContainer
         VISIBLE_HEIGHT_VH.value = 100 - currentBottomInVh.value
-        content.value.style.bottom = currentBottomInVh.value + 'vh'   
+        content.value.style.bottom = currentBottomInVh.value + 'vh'
     }
 }
 
@@ -89,31 +83,72 @@ const handleTransitionEnd = () => {
     inputRefs.value[1].focus();
 };
 
-const resizeInput = (index) => {
-        const inputEl = inputRefs.value[index];
-        if (inputEl) {
-            inputEl.style.height = 'auto';
-            inputEl.style.height = `${inputEl.scrollHeight}px`;
-            updateVisibleHeightAndBottom()
-        }
-};
-
-function convertPxToVh(pxValue) {
-  const viewportHeight = window.innerHeight;
-  return (pxValue / viewportHeight) * 100;
+const scrollContainerClick = (event) => {
+    event.stopPropagation();
+    inputRefs.value[1].focus();
 }
+
+const resizeInput = (index) => {
+    const inputEl = inputRefs.value[index];
+    if (inputEl) {
+        inputEl.style.height = 'auto';
+        inputEl.style.height = `${inputEl.scrollHeight}px`;
+        updateVisibleHeightAndBottom()
+    }
+};
 
 onMounted(() => {
     inputRefs.value[1].focus();
     window.addEventListener('wheel', handleScroll);
     updateVisibleHeightAndBottom()
     initialLineHeight.value = inputRefs.value[0].style.height
+
+    document.getElementsByTagName('body')[0].addEventListener('click',
+        (event) => {
+            currentBottomInVh.value = 100 - VISIBLE_HEIGHT_VH.value
+            touchDown.value = false
+        })
+
+    document.getElementsByTagName('body')[0].addEventListener('wheel',
+        (event) => {
+            if (currentBottomInVh.value <= 100 - VISIBLE_HEIGHT_VH.value -10) {
+                enableScroll()
+                handleScroll(event)
+            }
+        })
 })
+
+const handleScroll = (event) => {
+    isWheelEventTriggered.value = true;
+    if (scrolling && content.value) {
+        if (!touchDown.value) {
+            hasBeenManuallyScrolled.value = true
+            const delta = event.deltaY;
+            currentBottomInVh.value += delta * 0.1;
+            currentBottomInVh.value = Math.max(10, Math.min(currentBottomInVh.value, 100 - VISIBLE_HEIGHT_VH.value));
+            content.value.style.bottom = `${currentBottomInVh.value}vh`;
+            if (currentBottomInVh.value >= 100 - VISIBLE_HEIGHT_VH.value) {
+                hasBeenManuallyScrolled.value = false
+            } else {
+
+            }
+        }
+
+        if (currentBottomInVh.value === 10) {
+            touchDown.value = true
+        }
+    }
+};
 
 onUnmounted(() => {
     window.removeEventListener('wheel', handleScroll);
+    window.removeEventListener('click', handleScroll);
 });
 
+function convertPxToVh(pxValue) {
+    const viewportHeight = window.innerHeight;
+    return (pxValue / viewportHeight) * 100;
+}
 
 const enableScroll = () => {
     scrolling = true;
@@ -123,35 +158,27 @@ const disableScroll = () => {
     scrolling = false;
 };
 
-const handleScroll = (event) => {
-    if (scrolling && content.value) {
-        hasBeenManuallyScrolled.value = true
-        const delta = event.deltaY;
-        currentBottomInVh.value += delta * 0.1;
-        currentBottomInVh.value = Math.max(10, Math.min(currentBottomInVh.value, 100 - VISIBLE_HEIGHT_VH.value));
-        content.value.style.bottom = `${currentBottomInVh.value}vh`;
-        console.log('currentBottomInVh.value', currentBottomInVh.value)
-        if (currentBottomInVh.value >= 100 - VISIBLE_HEIGHT_VH.value) {
-            console.log('touch top')
-            hasBeenManuallyScrolled.value = false
-        } else {
-
-        }
-        
-    }
+const scrollTouch = (msg) => {
+    touchDown.value = false
 };
+
+watchEffect(() => {
+    if (isWheelEventTriggered.value) {
+        setTimeout(() => {
+            isWheelEventTriggered.value = false;
+        }, 400);
+    }
+});
 
 </script>
       
 <style>
-
 .expanding-content {
     z-index: 999999999999;
     border: 0px solid #ccc;
     overflow: visible;
     outline: none;
 }
-
 
 .main-container {
     position: absolute;
@@ -165,7 +192,7 @@ const handleScroll = (event) => {
     min-width: 30vw;
     /* min-height: 20vh; */
     backdrop-filter: blur(10px);
-    
+
 }
 
 .center-wrapper {
@@ -182,6 +209,8 @@ const handleScroll = (event) => {
     overflow: hidden;
     backdrop-filter: blur(10px);
     border-bottom: 2px solid #d4af37;
+    transition: bottom 0.3s ease;
+    z-index: 9999999999;
 }
 
 .bottom-sticky {
@@ -192,17 +221,17 @@ const handleScroll = (event) => {
 }
 
 .top-div {
-  position: absolute;
-  bottom: 100px;
-  left: 0;
-  right: 0;
-  /* height: 50px;  */
-  /* background-color: blue; */
+    position: absolute;
+    bottom: 100px;
+    left: 0;
+    right: 0;
+    /* height: 50px;  */
+    /* background-color: blue; */
 }
 
 .indexzero {
     text-align: center;
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
 }
 
 .indexone {
@@ -234,5 +263,7 @@ const handleScroll = (event) => {
     transition: all 2s ease;
 }
 
-
+.scroll-container.no-transition {
+    transition: none !important;
+}
 </style>

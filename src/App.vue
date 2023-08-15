@@ -1,32 +1,29 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-// import SpeakEasyFLow from './speakEasyFlow.vue'
-
-</script>
-
 <template>
-  <div style="position: absolute;top:0;left:0">
+<div>
+  <!-- <div style="position: absolute;top:0;left:0">
 
     <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-    dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsd</div>
+      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
+      fsd</div>
     <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-    dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsd</div>
+      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
+      fsd</div>
     <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-    dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsd</div>
+      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
+      fsd</div>
     <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-    dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsd</div>
+      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
+      fsd</div>
     <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-    dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsd</div>
-    
-  </div>
-  <!-- <SpeakEasyFLow></SpeakEasyFLow> -->
-<speak-easy-flow></speak-easy-flow>
- <div class="wrapper">
-  dfdsfds
+      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
+      fsd</div>
+  </div> -->
+  <speak-easy></speak-easy>
 </div>
-
 </template>
+
+<script setup>
+</script>
 
 <style scoped>
 header {
@@ -41,6 +38,7 @@ header {
 body {
   background-color: antiquewhite;
 }
+
 @media (min-width: 1024px) {
   header {
     display: flex;
@@ -57,5 +55,4 @@ body {
     place-items: flex-start;
     flex-wrap: wrap;
   }
-}
-</style>
+}</style>
