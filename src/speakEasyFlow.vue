@@ -17,17 +17,16 @@
                                 :class="['list-item', 'expanding-content', { 'indexzero': index === 0 }, { 'indexone': index === 1 }]"
                                 @input="(event) => { updateText(event); resizeInput(index); }" @keyup.enter="submit"
                                 @transitionend="handleTransitionEnd">
-                                {{ conversation[index] }}
+                                {{ conversationValue[index] }}
                             </div>
-                            <span style="height: 0;" ref="measure">{{ conversation[index] }}</span>
+                            <span style="height: 0;" ref="measure">{{ conversationValue[index] }}</span>
                         </transition-group>
                     </div>
                 </div>
             </div>
         </div>
-
-
     </div>
+    dsifjdjsfiod {{ props.apiResponse }}
 </template>
       
 <script setup>
@@ -41,8 +40,6 @@ const conversation = ref(['', '']);
 const inputRefs = ref([]);
 const MAX_WIDTH_VW = ref(50);
 const hasBeenManuallyScrolled = ref(false);
-
-
 const VISIBLE_HEIGHT_VH = ref(5)
 const currentBottomInVh = ref(100 - VISIBLE_HEIGHT_VH.value);
 const content = ref(null);
@@ -53,8 +50,30 @@ const initialLineHeight = ref(null)
 const touchDown = ref(false)
 const toArchive = ref('')
 const isWheelEventTriggered = ref(false);
-
 const historicalConv = ref()
+// const apiResponse = ref('')
+const tempConcatenatedString = ref('')
+
+import { defineProps, defineEmits, computed } from 'vue'
+
+
+const emit = defineEmits();
+// const props = defineProps(['apiResponse'])
+
+const props = defineProps({
+    apiResponse: {
+    type: String,
+    default: ''
+  }})
+
+// const conversation = computed(() => ['', '']);
+
+const conversationValue = computed({
+      get: () => conversation.value,
+      set: (newValue) => {
+        conversation.value[0] = newValue
+      }
+    });
 
 
 const updateText = (event) => {
@@ -62,10 +81,12 @@ const updateText = (event) => {
 };
 
 const submit = () => {
+    emit('submit-event', conversation.value[1]);
     divs.value = [divs.value[1], divs.value[0]];
     console.log('conversation.value[0]', conversation.value[0])
     toArchive.value = conversation.value[1]
-    conversation.value = [conversation.value[1], '']
+    conversationValue.value = props.apiResponse
+    // conversationValue.value = [conversation.value[1], props.apiResponse]
     inputRefs.value[0].style.height = initialLineHeight.value
     updateVisibleHeightAndBottom()
 };

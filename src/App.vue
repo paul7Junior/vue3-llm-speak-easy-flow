@@ -18,7 +18,7 @@
       dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
       fsd</div>
   </div> -->
-  <speak-easy></speak-easy>
+  <speak-easy apiResponse=""></speak-easy>
 </div>
 </template>
 
