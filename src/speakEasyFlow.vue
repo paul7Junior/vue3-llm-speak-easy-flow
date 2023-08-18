@@ -19,8 +19,9 @@
                                 @transitionend="handleTransitionEnd">
                                 {{ conversation[index] }}
                             </div>
-                            <span style="height: 0;" ref="measure">{{ conversation[index] }}</span>
+                            <span key='fakeKey' style="height: 0;" ref="measure">{{ conversation[index] }}</span>
                         </transition-group>
+                        
                     </div>
                 </div>
             </div>
@@ -35,8 +36,8 @@ import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
 import historicalConversations from './components/HistoricalConversation.vue'
 
 
-const divs = ref(['a', 'b']);
-const isReadOnly = ref(['false', 'true']);
+const divs = ref(['1', '2', '3']);
+const isReadOnly = ref(['false', 'true', 'false']);
 const conversation = ref(['', '']);
 const inputRefs = ref([]);
 const MAX_WIDTH_VW = ref(50);
@@ -62,8 +63,7 @@ const updateText = (event) => {
 };
 
 const submit = () => {
-    divs.value = [divs.value[1], divs.value[0]];
-    console.log('conversation.value[0]', conversation.value[0])
+    divs.value = [divs.value[1], divs.value[0], divs.value[2]];
     toArchive.value = conversation.value[1]
     conversation.value = [conversation.value[1], '']
     inputRefs.value[0].style.height = initialLineHeight.value
@@ -72,7 +72,9 @@ const submit = () => {
 
 const updateVisibleHeightAndBottom = () => {
     if (!hasBeenManuallyScrolled.value) {
-        let currentHeightContainer = convertPxToVh(groupConv.value.offsetHeight)
+        console.log('inputRefsinputRefs', inputRefs.value[0].style.offsetHeight)
+        console.log('inputRefsinputRefs', inputRefs.value[0].offsetHeight)
+        let currentHeightContainer = convertPxToVh(groupConv.value.offsetHeight - inputRefs.value[0].offsetHeight - 4)
         currentBottomInVh.value = 100 - currentHeightContainer
         VISIBLE_HEIGHT_VH.value = 100 - currentBottomInVh.value
         content.value.style.bottom = currentBottomInVh.value + 'vh'

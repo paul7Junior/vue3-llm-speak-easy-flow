@@ -18,11 +18,50 @@
       dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
       fsd</div>
   </div> -->
-  <speak-easy></speak-easy>
+  <speak-easy @submit-event="startStream" :apiResponse="llmResponseString"></speak-easy>
 </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
+const llmResponseString = ref('')
+
+
+function startStream() {
+        
+        setTimeout(() => {
+          let websocket;
+          websocket = new WebSocket("wss://localhost:8000/ws");
+        
+          websocket.onopen = (event) => {
+            console.log('Opened connection')
+              websocket.send(JSON.stringify({'text': 'Hey'}));
+          };
+      
+          websocket.onmessage = (event) => {
+            console.log('event', event)
+              // dataList.value.push({ id: Date.now(), content: event.data });
+              // this.llmResponse.push({ id: Date.now(), content: event.data })
+              this.llmResponse.push(event.data)
+              this.llmResponseString = this.llmResponseString + event.data
+              console.log('this.llmResponse', this.llmResponse)
+              console.log('this.llmResponseString', this.llmResponseString)
+          };
+      
+          websocket.onerror = (error) => {
+              console.error("WebSocket Error:", error);
+          };
+      
+          websocket.onclose = (event) => {
+              if (event.wasClean) {
+                  console.log(`Connection closed cleanly, code=${event.code}, reason=${event.reason}`);
+              } else {
+                  console.error('Connection died');
+              }
+          };
+      }, 500)
+      }
 </script>
 
 <style scoped>

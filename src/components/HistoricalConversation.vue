@@ -25,7 +25,7 @@ import { ref, defineProps, defineEmits, onMounted, watch, watchEffect, computed 
 
 const props = defineProps({
     touchDown: {
-    type: String,
+    type: Boolean,
   },
   toArchive: {
     type: String,
