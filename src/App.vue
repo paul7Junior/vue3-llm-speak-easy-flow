@@ -29,6 +29,7 @@ const llmResponseString = ref('')
 
 
 function startStream() {
+  console.log('AAAA')
         
         setTimeout(() => {
           let websocket;
@@ -43,10 +44,10 @@ function startStream() {
             console.log('event', event)
               // dataList.value.push({ id: Date.now(), content: event.data });
               // this.llmResponse.push({ id: Date.now(), content: event.data })
-              this.llmResponse.push(event.data)
-              this.llmResponseString = this.llmResponseString + event.data
-              console.log('this.llmResponse', this.llmResponse)
-              console.log('this.llmResponseString', this.llmResponseString)
+              // this.llmResponse.push(event.data)
+              llmResponseString.value = llmResponseString.value + event.data
+              // console.log('this.llmResponse', this.llmResponse)
+              console.log('this.llmResponseString', llmResponseString.value)
           };
       
           websocket.onerror = (error) => {

@@ -31,30 +31,39 @@
                         @keydown.enter.prevent="submit"
                         >
                         {{ item }}
-                        <button @click="remove(index)">x</button>
                         </div>
                     </TransitionGroup>
                     </div>
+                    
                 </div>
             </div>
         </div>
 
-
+        {{ apiResponse }}kKK
     </div>
 </template>
       
 <script setup>
 import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
 import historicalConversations from './components/HistoricalConversation.vue'
+import { defineEmits } from 'vue';
 
 
 const getInitialItems = () => [1, 2, 3, 4, 5]
 const items = ref(getInitialItems())
 
+const props = defineProps({
+    apiResponse: {
+    type: String,
+    default: ''
+  }})
+
+const emit = defineEmits();
+
 const focusedIndex = ref(0)
 const player = ref('human')
-const divs = ref(['1', '2']);
-const contenteditable = ref(['true', 'true']);
+const divs = ref(['1']);
+const contenteditable = ref(['true']);
 const conversation = ref(['', '']);
 const inputRefs = ref([]);
 const MAX_WIDTH_VW = ref(50);
@@ -73,10 +82,6 @@ const isWheelEventTriggered = ref(false);
 
 const historicalConv = ref()
 
-function remove(index) {
-    divs.value.splice(index, 1)
-}
-
 const updateText = (event) => {
     conversation.value = [conversation.value[0], event.target.textContent];
 };
@@ -84,6 +89,8 @@ const updateText = (event) => {
 const submit = () => {
     if (player.value === 'human') {
         divs.value.splice(0, 1)
+        divs.value.push('')
+        emit('submit-event', 'Hey');
     }
     // divs.value = [divs.value[1], divs.value[0], divs.value[2]];
     // toArchive.value = conversation.value[1]
