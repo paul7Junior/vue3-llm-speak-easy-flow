@@ -105,7 +105,7 @@ watch(apiResponse, (newValue, oldValue) => {
 
 watch(apiStatus, (newValue, oldValue) => {
 if (apiStatus.value === 'closed') {
-    divs.value.push('')
+    divs.value.push('human')
     focusedIndex.value = 1
     player.value = 'human'
     textDisplayed.value = ''
@@ -125,10 +125,11 @@ const updateText = (event) => {
         player.value = 'ai'
         focusedIndex.value = 0
         textDisplayed.value = ''
+        let el = document.getElementsByClassName('human')
+        el[0].focus();
         nextTick(() => {
             updateVisibleHeightAndBottom();
-            inputRefs.value[focusedIndex.value].focus();
-            conversation.value[0] = event.target.textContent
+            // conversation.value[0] = event.target.textContent
             player.value = 'human'
         });
     }
