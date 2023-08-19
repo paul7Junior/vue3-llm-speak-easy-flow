@@ -11,7 +11,7 @@
             <div ref="groupConv" class="main-container">
                 <div class="center-wrapper">
                     <div>
-                        <transition-group name="list">
+                        <!-- <transition-group name="list">
                             <div v-for="(item, index) in divs" :contenteditable=isReadOnly[index] :key="item"
                                 :ref="el => inputRefs[index] = el"
                                 :class="['list-item', 'expanding-content', { 'indexzero': index === 0 }, { 'indexone': index === 1 }]"
@@ -19,9 +19,21 @@
                                 @transitionend="handleTransitionEnd">
                                 {{ conversation[index] }}
                             </div>
-                            <span key='fakeKey' style="height: 0;" ref="measure">{{ conversation[index] }}</span>
-                        </transition-group>
-                        
+                        </transition-group> -->
+
+
+                        <TransitionGroup tag="ul" name="fade" class="container">
+                        <div v-for="(item, index) in divs" 
+                        class="item" 
+                        :contenteditable=contenteditable[index]
+                        :key="item"
+                        :ref="el => inputRefs[index] = el"
+                        @keydown.enter.prevent="submit"
+                        >
+                        {{ item }}
+                        <button @click="remove(index)">x</button>
+                        </div>
+                    </TransitionGroup>
                     </div>
                 </div>
             </div>
@@ -36,8 +48,13 @@ import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
 import historicalConversations from './components/HistoricalConversation.vue'
 
 
-const divs = ref(['1', '2', '3']);
-const isReadOnly = ref(['false', 'true', 'false']);
+const getInitialItems = () => [1, 2, 3, 4, 5]
+const items = ref(getInitialItems())
+
+const focusedIndex = ref(0)
+const player = ref('human')
+const divs = ref(['1', '2']);
+const contenteditable = ref(['true', 'true']);
 const conversation = ref(['', '']);
 const inputRefs = ref([]);
 const MAX_WIDTH_VW = ref(50);
@@ -49,7 +66,6 @@ const currentBottomInVh = ref(100 - VISIBLE_HEIGHT_VH.value);
 const content = ref(null);
 const groupConv = ref(null);
 let scrolling = false;
-const measure = ref(null);
 const initialLineHeight = ref(null)
 const touchDown = ref(false)
 const toArchive = ref('')
@@ -57,24 +73,30 @@ const isWheelEventTriggered = ref(false);
 
 const historicalConv = ref()
 
+function remove(index) {
+    divs.value.splice(index, 1)
+}
 
 const updateText = (event) => {
     conversation.value = [conversation.value[0], event.target.textContent];
 };
 
 const submit = () => {
-    divs.value = [divs.value[1], divs.value[0], divs.value[2]];
-    toArchive.value = conversation.value[1]
-    conversation.value = [conversation.value[1], '']
-    inputRefs.value[0].style.height = initialLineHeight.value
-    updateVisibleHeightAndBottom()
+    if (player.value === 'human') {
+        divs.value.splice(0, 1)
+    }
+    // divs.value = [divs.value[1], divs.value[0], divs.value[2]];
+    // toArchive.value = conversation.value[1]
+    // conversation.value = [conversation.value[1], '']
+    // inputRefs.value[0].style.height = initialLineHeight.value
+    // updateVisibleHeightAndBottom()
 };
 
 const updateVisibleHeightAndBottom = () => {
     if (!hasBeenManuallyScrolled.value) {
         console.log('inputRefsinputRefs', inputRefs.value[0].style.offsetHeight)
         console.log('inputRefsinputRefs', inputRefs.value[0].offsetHeight)
-        let currentHeightContainer = convertPxToVh(groupConv.value.offsetHeight - inputRefs.value[0].offsetHeight - 4)
+        let currentHeightContainer = convertPxToVh(groupConv.value.offsetHeight)
         currentBottomInVh.value = 100 - currentHeightContainer
         VISIBLE_HEIGHT_VH.value = 100 - currentBottomInVh.value
         content.value.style.bottom = currentBottomInVh.value + 'vh'
@@ -82,12 +104,12 @@ const updateVisibleHeightAndBottom = () => {
 }
 
 const handleTransitionEnd = () => {
-    inputRefs.value[1].focus();
+    inputRefs.value[focusedIndex.value].focus();
 };
 
 const scrollContainerClick = (event) => {
     event.stopPropagation();
-    inputRefs.value[1].focus();
+    inputRefs.value[focusedIndex.value].focus();
 }
 
 const resizeInput = (index) => {
@@ -100,7 +122,7 @@ const resizeInput = (index) => {
 };
 
 onMounted(() => {
-    inputRefs.value[1].focus();
+    inputRefs.value[focusedIndex.value].focus();
     window.addEventListener('wheel', handleScroll);
     updateVisibleHeightAndBottom()
     initialLineHeight.value = inputRefs.value[0].style.height
@@ -265,7 +287,27 @@ watchEffect(() => {
     transition: all 2s ease;
 }
 
+.list-leave-to {
+    opacity: 0;
+}
+
 .scroll-container.no-transition {
     transition: none !important;
+}
+
+
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-leave-active {
+  position: absolute;
 }
 </style>
