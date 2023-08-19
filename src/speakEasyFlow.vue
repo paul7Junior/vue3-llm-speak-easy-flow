@@ -25,13 +25,16 @@
                         <TransitionGroup tag="ul" name="fade" class="container">
                         <div v-for="(item, index) in divs" 
                         class="item" 
-                        :contenteditable=contenteditable[index]
+                        :class="[{ 'human': item === 'human' }, { 'ai': item === 'ai' }]"
+                        :contenteditable="index === focusedIndex ? true : false"
                         :key="item"
                         :ref="el => inputRefs[index] = el"
+                        @input="(event) => { updateText(event); resizeInput(index); }"
                         @keydown.enter.prevent="submit"
                         >
-                        {{ item }}
-                        </div>
+                        {{ textDisplayed[index] }}
+                        <!-- {{ textDisplayed }} -->
+                       </div>
                     </TransitionGroup>
                     </div>
                     
@@ -39,24 +42,25 @@
             </div>
         </div>
 
-        {{ apiResponse }}kKK
+        <!-- {{ apiResponse }}kKK -->
     </div>
 </template>
       
 <script setup>
-import { ref, onMounted, onUnmounted, watchEffect } from 'vue';
+import { ref, onMounted, onUnmounted, watchEffect, computed, watch, nextTick } from 'vue';
 import historicalConversations from './components/HistoricalConversation.vue'
 import { defineEmits } from 'vue';
-
-
-const getInitialItems = () => [1, 2, 3, 4, 5]
-const items = ref(getInitialItems())
 
 const props = defineProps({
     apiResponse: {
     type: String,
     default: ''
-  }})
+  },
+  apiStatus: {
+    type: String,
+    default: ''
+  }
+})
 
 const emit = defineEmits();
 
@@ -64,11 +68,12 @@ const focusedIndex = ref(0)
 const player = ref('human')
 const divs = ref(['1']);
 const contenteditable = ref(['true']);
-const conversation = ref(['', '']);
+const conversation = ref(['']);
 const inputRefs = ref([]);
 const MAX_WIDTH_VW = ref(50);
 const hasBeenManuallyScrolled = ref(false);
-
+const apiStatus = computed(() => props.apiStatus)
+const apiResponse = computed(() => props.apiResponse)
 
 const VISIBLE_HEIGHT_VH = ref(5)
 const currentBottomInVh = ref(100 - VISIBLE_HEIGHT_VH.value);
@@ -79,11 +84,55 @@ const initialLineHeight = ref(null)
 const touchDown = ref(false)
 const toArchive = ref('')
 const isWheelEventTriggered = ref(false);
-
 const historicalConv = ref()
 
+const textDisplayed = computed({
+    get: () => conversation.value,//[props.apiResponse, ''],
+    set: (newValue) => {
+        if (player.value === 'human') {
+            conversation.value.push(newValue)
+            return conversation.value
+        } else if (player.value === 'ai') {
+            conversation.value[0] = newValue
+        }
+    }
+});
+
+watch(apiResponse, (newValue, oldValue) => {
+    textDisplayed.value = props.apiResponse
+    updateVisibleHeightAndBottom()    
+})
+
+watch(apiStatus, (newValue, oldValue) => {
+if (apiStatus.value === 'closed') {
+    divs.value.push('')
+    focusedIndex.value = 1
+    player.value = 'human'
+    textDisplayed.value = ''
+    nextTick(() => {
+            updateVisibleHeightAndBottom();
+            inputRefs.value[focusedIndex.value].focus();
+        });
+    updateVisibleHeightAndBottom()
+}
+});
+
 const updateText = (event) => {
-    conversation.value = [conversation.value[0], event.target.textContent];
+    console.log('player.value', player.value)
+    console.log('divs.value.length', divs.value.length)
+    if (player.value === 'human' && divs.value.length == 2) {
+        divs.value.splice(0, 1)
+        player.value = 'ai'
+        focusedIndex.value = 0
+        textDisplayed.value = ''
+        nextTick(() => {
+            updateVisibleHeightAndBottom();
+            inputRefs.value[focusedIndex.value].focus();
+            conversation.value[0] = event.target.textContent
+            player.value = 'human'
+        });
+    }
+    // conversation.value = [conversation.value[0], event.target.textContent];
 };
 
 const submit = () => {
@@ -91,18 +140,22 @@ const submit = () => {
         divs.value.splice(0, 1)
         divs.value.push('')
         emit('submit-event', 'Hey');
+        player.value = 'ai'
+        // textDisplayed = apiResponse.value
+    } else if (player.value === 'ai') {
+        divs.value.splice(0, 1)
     }
     // divs.value = [divs.value[1], divs.value[0], divs.value[2]];
     // toArchive.value = conversation.value[1]
     // conversation.value = [conversation.value[1], '']
     // inputRefs.value[0].style.height = initialLineHeight.value
-    // updateVisibleHeightAndBottom()
+    updateVisibleHeightAndBottom()
 };
 
 const updateVisibleHeightAndBottom = () => {
     if (!hasBeenManuallyScrolled.value) {
-        console.log('inputRefsinputRefs', inputRefs.value[0].style.offsetHeight)
-        console.log('inputRefsinputRefs', inputRefs.value[0].offsetHeight)
+        // console.log('inputRefsinputRefs', inputRefs.value[0].style.offsetHeight)
+        // console.log('inputRefsinputRefs', inputRefs.value[0].offsetHeight)
         let currentHeightContainer = convertPxToVh(groupConv.value.offsetHeight)
         currentBottomInVh.value = 100 - currentHeightContainer
         VISIBLE_HEIGHT_VH.value = 100 - currentBottomInVh.value
@@ -120,6 +173,8 @@ const scrollContainerClick = (event) => {
 }
 
 const resizeInput = (index) => {
+    let el = document.getElementsByClassName('container')
+    // console.log('el-------', el)
     const inputEl = inputRefs.value[index];
     if (inputEl) {
         inputEl.style.height = 'auto';
@@ -281,13 +336,10 @@ watchEffect(() => {
     content: '\a0';
 }
 
-.list-item br {
-    line-height: 0;
-    height: 0;
-    content: "";
-    display: none;
-    /* You could also try setting display to none */
+.item {
+    outline: none;
 }
+
 
 .list-enter-active,
 .list-leave-active {

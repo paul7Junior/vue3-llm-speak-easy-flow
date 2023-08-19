@@ -18,7 +18,7 @@
       dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
       fsd</div>
   </div> -->
-  <speak-easy @submit-event="startStream" :apiResponse="llmResponseString"></speak-easy>
+  <speak-easy @submit-event="startStream" :apiResponse="llmResponseString" :apiStatus="apiStatus"></speak-easy>
 </div>
 </template>
 
@@ -26,7 +26,7 @@
 import { ref } from 'vue'
 
 const llmResponseString = ref('')
-
+const apiStatus = ref('')
 
 function startStream() {
   console.log('AAAA')
@@ -37,17 +37,19 @@ function startStream() {
         
           websocket.onopen = (event) => {
             console.log('Opened connection')
+            llmResponseString.value = ''
+            apiStatus.value = ''
               websocket.send(JSON.stringify({'text': 'Hey'}));
           };
       
           websocket.onmessage = (event) => {
-            console.log('event', event)
+            // console.log('event', event)
               // dataList.value.push({ id: Date.now(), content: event.data });
               // this.llmResponse.push({ id: Date.now(), content: event.data })
               // this.llmResponse.push(event.data)
               llmResponseString.value = llmResponseString.value + event.data
               // console.log('this.llmResponse', this.llmResponse)
-              console.log('this.llmResponseString', llmResponseString.value)
+              // console.log('this.llmResponseString', llmResponseString.value)
           };
       
           websocket.onerror = (error) => {
@@ -56,6 +58,7 @@ function startStream() {
       
           websocket.onclose = (event) => {
               if (event.wasClean) {
+                  apiStatus.value = 'closed'
                   console.log(`Connection closed cleanly, code=${event.code}, reason=${event.reason}`);
               } else {
                   console.error('Connection died');
