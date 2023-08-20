@@ -10,19 +10,8 @@
         <div class="bottom-sticky" :style="{ height: VISIBLE_HEIGHT_VH + 'vh' }">
             <div ref="groupConv" class="main-container">
                 <div class="center-wrapper">
-                    <div>
-                        <!-- <transition-group name="list">
-                            <div v-for="(item, index) in divs" :contenteditable=isReadOnly[index] :key="item"
-                                :ref="el => inputRefs[index] = el"
-                                :class="['list-item', 'expanding-content', { 'indexzero': index === 0 }, { 'indexone': index === 1 }]"
-                                @input="(event) => { updateText(event); resizeInput(index); }" @keyup.enter="submit"
-                                @transitionend="handleTransitionEnd">
-                                {{ conversation[index] }}
-                            </div>
-                        </transition-group> -->
-
-
-                        <TransitionGroup tag="ul" name="fade" class="container">
+                    <div style="width: 100%;text-align: center;">
+                        <TransitionGroup name="fade">
                         <div v-for="(item, index) in divs" 
                         class="item" 
                         :class="[{ 'human': item === 'human' }, { 'ai': item === 'ai' }]"
@@ -128,6 +117,7 @@ const updateText = (event) => {
         let el = document.getElementsByClassName('human')
         el[0].focus();
         nextTick(() => {
+            console.log('NEXT TICK')
             updateVisibleHeightAndBottom();
             // conversation.value[0] = event.target.textContent
             player.value = 'human'
@@ -136,11 +126,12 @@ const updateText = (event) => {
     // conversation.value = [conversation.value[0], event.target.textContent];
 };
 
-const submit = () => {
+const submit = (event) => {
     if (player.value === 'human') {
+        console.log('conversation.value[0]',  event.target.textContent)
+        emit('submit-event', event.target.textContent);
         divs.value.splice(0, 1)
         divs.value.push('')
-        emit('submit-event', 'Hey');
         player.value = 'ai'
         // textDisplayed = apiResponse.value
     } else if (player.value === 'ai') {
@@ -158,6 +149,7 @@ const updateVisibleHeightAndBottom = () => {
         // console.log('inputRefsinputRefs', inputRefs.value[0].style.offsetHeight)
         // console.log('inputRefsinputRefs', inputRefs.value[0].offsetHeight)
         let currentHeightContainer = convertPxToVh(groupConv.value.offsetHeight)
+        console.log('currentHeightContainer+++++ ', currentHeightContainer)
         currentBottomInVh.value = 100 - currentHeightContainer
         VISIBLE_HEIGHT_VH.value = 100 - currentBottomInVh.value
         content.value.style.bottom = currentBottomInVh.value + 'vh'
@@ -174,14 +166,16 @@ const scrollContainerClick = (event) => {
 }
 
 const resizeInput = (index) => {
-    let el = document.getElementsByClassName('container')
-    // console.log('el-------', el)
-    const inputEl = inputRefs.value[index];
-    if (inputEl) {
-        inputEl.style.height = 'auto';
-        inputEl.style.height = `${inputEl.scrollHeight}px`;
-        updateVisibleHeightAndBottom()
-    }
+    // let el = document.getElementsByClassName('main-container')
+    // console.log('el-------', el[0])
+    // const inputEl = inputRefs.value[index];
+    // if (el[0]) {
+    //     // el.style.height = 'auto';
+    //     // el.style.height = `${inputEl.scrollHeight}px`;
+    //     updateVisibleHeightAndBottom()
+    // }
+
+    updateVisibleHeightAndBottom()
 };
 
 onMounted(() => {
@@ -367,7 +361,7 @@ watchEffect(() => {
   opacity: 0;
 }
 
-.fade-leave-active {
+.list-leave-active {
   position: absolute;
 }
 </style>

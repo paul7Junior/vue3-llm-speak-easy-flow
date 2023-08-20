@@ -28,18 +28,17 @@ import { ref } from 'vue'
 const llmResponseString = ref('')
 const apiStatus = ref('')
 
-function startStream() {
-  console.log('AAAA')
+function startStream(submittedValue) {
         
         setTimeout(() => {
           let websocket;
           websocket = new WebSocket("wss://localhost:8000/ws");
         
           websocket.onopen = (event) => {
-            console.log('Opened connection')
+            console.log('Opened connection', submittedValue)
             llmResponseString.value = ''
             apiStatus.value = ''
-              websocket.send(JSON.stringify({'text': 'Hey'}));
+              websocket.send(JSON.stringify({'text': submittedValue}));
           };
       
           websocket.onmessage = (event) => {
@@ -64,7 +63,7 @@ function startStream() {
                   console.error('Connection died');
               }
           };
-      }, 500)
+      }, 1000)
       }
 </script>
 
