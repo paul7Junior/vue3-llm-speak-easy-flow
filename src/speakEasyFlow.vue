@@ -1,29 +1,28 @@
 <template>
-  <div
-    class="scroll-container"
-    @click="scrollContainerClick"
-    @mouseover="enableScroll"
-    @mouseleave="disableScroll"
-    :class="{ 'no-transition': isWheelEventTriggered }"
-    :style="{ bottom: currentBottomInVh + 'vh', width: MAX_WIDTH_VW + 'vw' }"
-    ref="content"
-  >
     <div
-      id="historicalConversation"
-      class="top-div"
-      :style="{ bottom: VISIBLE_HEIGHT_VH + 'vh' }"
+      class="scroll-container"
+      @click="scrollContainerClick"
+      @mouseover="enableScroll"
+      @mouseleave="disableScroll"
+      :class="{ 'no-transition': isWheelEventTriggered }"
+      :style="{ bottom: currentBottomInVh + 'vh', width: MAX_WIDTH_VW + 'vw' }"
+      ref="content"
     >
-      <historicalConversations
-        ref="historicalConv"
-        :touchDown="touchDown"
-        :toArchive="toArchive"
-        @message-sent="scrollTouch"
-      ></historicalConversations>
-    </div>
+      <div
+        id="historicalConversation"
+        class="top-div"
+        :style="{ bottom: VISIBLE_HEIGHT_VH + 'vh' }"
+      >
+        <historicalConversations
+          ref="historicalConv"
+          :touchDown="touchDown"
+          :toArchive="toArchive"
+          @message-sent="scrollTouch"
+        ></historicalConversations>
+      </div>
 
-    <div class="wrapper">
       <div class="bottom-sticky" :style="{ height: VISIBLE_HEIGHT_VH + 'vh' }">
-        <!-- <div class="main-container" ref="groupConv">
+        <div class="main-container" ref="groupConv">
           <div class="center-wrapper">
             <div style="width: 100%; text-align: center">
               <TransitionGroup name="fade">
@@ -47,11 +46,16 @@
               </TransitionGroup>
             </div>
           </div>
-        </div> -->
+        </div>
       </div>
       <div class="below-sticky">This div will be right below the fixed container.</div>
+      
     </div>
-  </div>
+    <div style="position:fixed" :style="{ bottom: currentBottomInVh -5 + 'vh'}">
+    
+
+AAAAAAA
+    </div>
 </template>
 
 <script setup>
@@ -253,6 +257,18 @@ watchEffect(() => {
 </script>
 
 <style>
+.scroll-container {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid #d4af37;
+  transition: bottom 0.3s ease;
+  z-index: 9999999999;
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -265,6 +281,13 @@ watchEffect(() => {
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+.sticky-div {
+  position: sticky;
+  top: 100%;
+  background-color: 'red'; /* Optional: set a background color */
+  /* Additional CSS properties as per your requirement */
 }
 
 .main-container {
@@ -299,18 +322,6 @@ watchEffect(() => {
   border: 0px solid #ccc;
   overflow: visible;
   outline: none;
-}
-
-.scroll-container {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  border-bottom: 2px solid #d4af37;
-  transition: bottom 0.3s ease;
-  z-index: 9999999999;
 }
 
 .top-div {
