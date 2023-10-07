@@ -1,23 +1,5 @@
 <template>
 <div>
-  <!-- <div style="position: absolute;top:0;left:0">
-
-    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
-      fsd</div>
-    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
-      fsd</div>
-    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
-      fsd</div>
-    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
-      fsd</div>
-    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
-      fsd</div>
-  </div> -->
   <speak-easy @submit-event="startStream" :apiResponse="llmResponseString" :apiStatus="apiStatus"></speak-easy>
 </div>
 </template>
@@ -35,20 +17,13 @@ function startStream(submittedValue) {
           websocket = new WebSocket("wss://localhost:8000/ws");
         
           websocket.onopen = (event) => {
-            console.log('Opened connection', submittedValue)
-            llmResponseString.value = ''
-            apiStatus.value = ''
+              llmResponseString.value = ''
+              apiStatus.value = ''
               websocket.send(JSON.stringify({'text': submittedValue}));
           };
       
           websocket.onmessage = (event) => {
-            // console.log('event', event)
-              // dataList.value.push({ id: Date.now(), content: event.data });
-              // this.llmResponse.push({ id: Date.now(), content: event.data })
-              // this.llmResponse.push(event.data)
               llmResponseString.value = llmResponseString.value + event.data
-              // console.log('this.llmResponse', this.llmResponse)
-              // console.log('this.llmResponseString', llmResponseString.value)
           };
       
           websocket.onerror = (error) => {

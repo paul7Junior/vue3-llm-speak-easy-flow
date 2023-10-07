@@ -21,8 +21,6 @@
 <script setup>
 import { ref, defineProps, defineEmits, onMounted, watch, watchEffect, computed } from 'vue';
 
-// const { touchDown, toArchive } = defineProps(['touchDown', 'toArchive']);
-
 const props = defineProps({
     touchDown: {
     type: Boolean,
@@ -32,37 +30,18 @@ const props = defineProps({
   }
 })
 
-// const { toArchive } = defineProps(['toArchive']);
 const conversationWrapper = ref(null);
 const emit = defineEmits(['message-sent']);
 
-// const toArchive2 = ref(toArchive)
-// useContext().expose({ count })
-
-const toArchive2 = computed(() => {
-    return props.toArchive;
-})
-
+const toArchive2 = computed(() => props.toArchive)
 
 watch(toArchive2, (newValue, oldValue) => {
+  console.log('hhhh', toArchive2.value);
+
   if (newValue) {
     addMessage(toArchive2.value)
-    console.log('hhhh', toArchive2.value);
   }
 });
-
-// watch(() => toArchive2, (newText, oldText) => {
-//     console.log('jiijij')
-// //   if (newText !== oldText && newText) {
-// //     const newId = conversations.value.length > 0 ? conversations.value[conversations.value.length - 1].id + 1 : 1;
-// //     const newMessage = {
-// //       id: newId,
-// //       sender: 'newSender', // Adjust as needed
-// //       text: newText
-// //     };
-// //     conversations.value.push(newMessage);
-// //   }
-// });
 
 const sendMessage = () => {
   emit('message-sent', 'Hello, Parent!');
