@@ -56,7 +56,7 @@ const sendMessage = () => {
     { id: 3, sender: 'person2', text: 'VVVVVGreat to hear!' },
     { id: 3, sender: 'person1', text: 'Grfdsjfidsfsidjfdeat to hear!' },
     { id: 3, sender: 'person3', text: 'GrdfjjfjjjJJJJJeat to hear!' },
-    { id: 3, sender: 'person1', text: 'GreaHHHHHHHt to hear!' }
+    { id: 3, sender: 'person1', text: 'NEW 111111 AAAAAAAGreaHHHHHHHt to hear!' }
   ]);
 
 onMounted(() => {

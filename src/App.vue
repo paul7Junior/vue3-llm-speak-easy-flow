@@ -1,45 +1,122 @@
 <template>
-<div>
-  <speak-easy @submit-event="startStream" :apiResponse="llmResponseString" :apiStatus="apiStatus"></speak-easy>
-</div>
+  <div>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <p>fdsfdsfdsfdsjfidsofids fiodshf oidshfoiudshfudsh fiuds f</p>
+    <speak-easy
+      @clickSuggestion="clickSuggestion"
+      @input="tt"
+      @submit-event="startStream"
+      :apiResponse="llmResponseString"
+      :apiStatus="apiStatus"
+      :autoSuggestionData="autoSuggestionData"
+    ></speak-easy>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 
-const llmResponseString = ref('')
-const apiStatus = ref('')
+const llmResponseString = ref("");
+const apiStatus = ref("");
+
+const autoSuggestionData = ref([
+  { name: "AAAddAAA", name2: "instanceOf", uuid: "description1" },
+  { name: "AAAffsAAA", name2: "instanceOf", uuid: "description2" },
+  { name: "AAAfdsfdAAA", name2: "instanceOf", uuid: "description3" },
+]);
+
+function tt(event) {
+  console.log(event);
+}
+
+function gggg() {
+  autoSuggestionData.value = [
+    { name: "ffff", name2: "inastanceOf", uuid: "description1" },
+  ];
+}
+
+function clickSuggestion(event) {
+  console.log(event);
+  autoSuggestionData.value = []
+}
 
 function startStream(submittedValue) {
-        
-        setTimeout(() => {
-          let websocket;
-          websocket = new WebSocket("wss://localhost:8000/ws");
-        
-          websocket.onopen = (event) => {
-              llmResponseString.value = ''
-              apiStatus.value = ''
-              websocket.send(JSON.stringify({'text': submittedValue}));
-          };
-      
-          websocket.onmessage = (event) => {
-              llmResponseString.value = llmResponseString.value + event.data
-          };
-      
-          websocket.onerror = (error) => {
-              console.error("WebSocket Error:", error);
-          };
-      
-          websocket.onclose = (event) => {
-              if (event.wasClean) {
-                  apiStatus.value = 'closed'
-                  console.log(`Connection closed cleanly, code=${event.code}, reason=${event.reason}`);
-              } else {
-                  console.error('Connection died');
-              }
-          };
-      }, 1000)
+  setTimeout(() => {
+    let websocket;
+    websocket = new WebSocket("wss://localhost:8000/ws");
+
+    websocket.onopen = (event) => {
+      llmResponseString.value = "";
+      apiStatus.value = "";
+      websocket.send(JSON.stringify({ text: submittedValue }));
+    };
+
+    websocket.onmessage = (event) => {
+      llmResponseString.value = llmResponseString.value + event.data;
+    };
+
+    websocket.onerror = (error) => {
+      console.error("WebSocket Error:", error);
+    };
+
+    websocket.onclose = (event) => {
+      if (event.wasClean) {
+        apiStatus.value = "closed";
+        console.log(
+          `Connection closed cleanly, code=${event.code}, reason=${event.reason}`
+        );
+      } else {
+        console.error("Connection died");
       }
+    };
+  }, 1000);
+}
 </script>
 
 <style scoped>
@@ -72,4 +149,5 @@ body {
     place-items: flex-start;
     flex-wrap: wrap;
   }
-}</style>
+}
+</style>

@@ -1,67 +1,80 @@
 <template>
+  <div
+    class="scroll-container"
+    @click="scrollContainerClick"
+    @mouseover="enableScroll"
+    @mouseleave="disableScroll"
+    :class="{ 'no-transition': isWheelEventTriggered }"
+    :style="{ bottom: currentBottomInVh + 'vh', width: MAX_WIDTH_VW + 'vw' }"
+    ref="content"
+  >
     <div
-      class="scroll-container"
-      @click="scrollContainerClick"
-      @mouseover="enableScroll"
-      @mouseleave="disableScroll"
-      :class="{ 'no-transition': isWheelEventTriggered }"
-      :style="{ bottom: currentBottomInVh + 'vh', width: MAX_WIDTH_VW + 'vw' }"
-      ref="content"
+      id="historicalConversation"
+      class="top-div"
+      :style="{ bottom: VISIBLE_HEIGHT_VH + 'vh' }"
     >
-      <div
-        id="historicalConversation"
-        class="top-div"
-        :style="{ bottom: VISIBLE_HEIGHT_VH + 'vh' }"
-      >
-        <historicalConversations
-          ref="historicalConv"
-          :touchDown="touchDown"
-          :toArchive="toArchive"
-          @message-sent="scrollTouch"
-        ></historicalConversations>
-      </div>
+      <historicalConversations
+        ref="historicalConv"
+        :touchDown="touchDown"
+        :toArchive="toArchive"
+        @message-sent="scrollTouch"
+      ></historicalConversations>
+    </div>
 
-      <div class="bottom-sticky" :style="{ height: VISIBLE_HEIGHT_VH + 'vh' }">
-        <div class="main-container" ref="groupConv">
-          <div class="center-wrapper">
-            <div style="width: 100%; text-align: center">
-              <TransitionGroup name="fade">
-                <div
-                  v-for="(item, index) in divs"
-                  class="item"
-                  :class="[{ human: item === 'human' }, { ai: item === 'ai' }]"
-                  :contenteditable="index === focusedIndex ? true : false"
-                  :key="item"
-                  :ref="(el) => (inputRefs[index] = el)"
-                  @input="
-                    (event) => {
-                      updateText(event);
-                      resizeInput(index);
-                    }
-                  "
-                  @keydown.enter.prevent="submit"
-                >
-                  {{ textDisplayed[index] }}
-                </div>
-              </TransitionGroup>
-            </div>
+    <div class="bottom-sticky" :style="{ height: VISIBLE_HEIGHT_VH + 'vh' }">
+      <div class="main-container" ref="groupConv">
+        <div class="center-wrapper">
+          <div style="width: 100%; text-align: center">
+            <TransitionGroup name="fade">
+              <div
+                v-for="(item, index) in divs"
+                class="item"
+                :class="[{ human: item === 'human' }, { ai: item === 'ai' }]"
+                :contenteditable="index === focusedIndex ? true : false"
+                :key="item"
+                :ref="(el) => (inputRefs[index] = el)"
+                @input="
+                  (event) => {
+                    updateText(event);
+                    resizeInput(index);
+                  }
+                "
+                @keydown.enter.prevent="submit"
+              >
+                {{ textDisplayed[index] }}
+              </div>
+            </TransitionGroup>
           </div>
         </div>
       </div>
-      <div class="below-sticky">This div will be right below the fixed container.</div>
-      
     </div>
-    <div style="position:fixed" :style="{ bottom: currentBottomInVh -5 + 'vh'}">
-    
-
-AAAAAAA
-    </div>
+  </div>
+  <div
+    style="
+      position: fixed;
+      backdrop-filter: blur(10px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999999;
+    "
+    :style="{ top: 100 - currentBottomInVh + 'vh', width: MAX_WIDTH_VW + 'vw' }"
+  >
+    <itemList
+      @click="emit('clickSuggestion', item.uuid);"
+        v-for="item in props.autoSuggestionData"
+        :key="item.name"
+        :name="item.name"
+        :name2="item.name"
+        :uuid="item.uuid"
+    ></itemList>
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted, watchEffect, computed, watch, nextTick } from "vue";
 import historicalConversations from "./components/HistoricalConversation.vue";
 import { defineEmits } from "vue";
+import itemList from "./components/ItemList.vue";
 
 const props = defineProps({
   apiResponse: {
@@ -72,9 +85,13 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  autoSuggestionData: {
+    type: Array,
+    default: [],
+  },
 });
 
-const emit = defineEmits();
+const emit = defineEmits(["input", "submit-event", "clickSuggestion"]);
 
 const focusedIndex = ref(0);
 const player = ref("human");
@@ -86,6 +103,7 @@ const MAX_WIDTH_VW = ref(50);
 const hasBeenManuallyScrolled = ref(false);
 const apiStatus = computed(() => props.apiStatus);
 const apiResponse = computed(() => props.apiResponse);
+const autoSuggestionData = computed(() => props.autoSuggestionData);
 
 const VISIBLE_HEIGHT_VH = ref(5);
 const currentBottomInVh = ref(100 - VISIBLE_HEIGHT_VH.value);
@@ -115,6 +133,12 @@ watch(apiResponse, (newValue, oldValue) => {
   updateVisibleHeightAndBottom();
 });
 
+watch(autoSuggestionData, (newValue, oldValue) => {
+  console.log('sssss');
+  console.log(newValue);
+  console.log(props.autoSuggestionData)
+});
+
 watch(apiStatus, (newValue, oldValue) => {
   if (apiStatus.value === "closed") {
     divs.value.push("human");
@@ -130,6 +154,7 @@ watch(apiStatus, (newValue, oldValue) => {
 });
 
 const updateText = (event) => {
+  emit("input", event.target.textContent);
   if (player.value === "human" && divs.value.length == 2) {
     toArchive.value = textDisplayed.value[0];
     divs.value.splice(0, 1);
@@ -286,7 +311,7 @@ watchEffect(() => {
 .sticky-div {
   position: sticky;
   top: 100%;
-  background-color: 'red'; /* Optional: set a background color */
+  background-color: "red"; /* Optional: set a background color */
   /* Additional CSS properties as per your requirement */
 }
 
@@ -308,13 +333,6 @@ watchEffect(() => {
   display: flex;
   justify-content: center;
   max-width: 100%;
-}
-
-.below-sticky {
-  position: absolute;
-  bottom: calc(-1 * 100px); /* replace [HEIGHT_YOU_WANT] */
-  left: 0;
-  right: 0;
 }
 
 .expanding-content {
