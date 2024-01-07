@@ -1,5 +1,5 @@
 <template>
-    <div ref="conversationWrapper" @wheel="handleWheel" :class="{ conversationwrapper: true }">
+    <div ref="conversationWrapper" :class="{ conversationwrapper: true }">
         
     <div class="conversation-container">
       <div
@@ -14,40 +14,27 @@
       </div>
     </div>
 </div>
-<!-- {{ touchDown }}
-<button @click="gg">fffff</button> -->
 </template>
   
 <script setup>
-import { ref, defineProps, defineEmits, onMounted, watch, watchEffect, computed } from 'vue';
+import { ref, defineProps, onMounted, watch, computed } from 'vue';
 
 const props = defineProps({
-    touchDown: {
-    type: Boolean,
-  },
   toArchive: {
     type: String,
   }
 })
 
 const conversationWrapper = ref(null);
-const emit = defineEmits(['message-sent']);
-
 const toArchive2 = computed(() => props.toArchive)
 
-
-
 watch(toArchive2, (newValue, oldValue) => {
-  console.log('hhhh', toArchive2.value);
 
   if (newValue) {
     addMessage(toArchive2.value)
   }
 });
 
-const sendMessage = () => {
-  emit('message-sent', 'Hello, Parent!');
-};
   const conversations = ref([
     { id: 1, sender: 'person1', text: 'Hi, how are you?' },
     { id: 2, sender: 'person2', text: 'I am good, thanks!' },
@@ -63,26 +50,10 @@ const sendMessage = () => {
 
 onMounted(() => {
     conversationWrapper.value.scrollTop = conversationWrapper.value.scrollHeight;
-
     conversationWrapper.value.addEventListener('click', (event) => {
            event.preventDefault();
         });
 });
-
-
-function handleWheel(event) {
-
-    const isAtBottom = conversationWrapper.value.scrollTop + conversationWrapper.value.clientHeight >= conversationWrapper.value.scrollHeight;
-    if (isAtBottom) {
-        sendMessage()
-    }
-
-    // if (props.touchDown) {
-    //     conversationWrapper.value.addEventListener('click', (event) => {
-    //        event.preventDefault();
-    //     });
-    // }
-}
 
 function addMessage(text) {
     const newId = conversations.value.length > 0 ? conversations.value[conversations.value.length - 1].id + 1 : 1;

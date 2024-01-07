@@ -15,9 +15,7 @@
     >
       <historicalConversations
         ref="historicalConv"
-        :touchDown="touchDown"
         :toArchive="toArchive"
-        @message-sent="scrollTouch"
       ></historicalConversations>
     </div>
 
@@ -231,12 +229,12 @@ onMounted(() => {
 const handleScroll = (event) => {
   isWheelEventTriggered.value = true;
   if (scrolling && content.value) {
-    if (!touchDown.value) {
+    if (currentBottomInVh.value >= 10) {
       hasBeenManuallyScrolled.value = true;
       const delta = event.deltaY;
       currentBottomInVh.value += delta * 0.1;
       currentBottomInVh.value = Math.max(
-        10,
+        11,
         Math.min(currentBottomInVh.value, 100 - VISIBLE_HEIGHT_VH.value)
       );
       content.value.style.bottom = `${currentBottomInVh.value}vh`;
@@ -268,10 +266,6 @@ const enableScroll = () => {
 
 const disableScroll = () => {
   scrolling = false;
-};
-
-const scrollTouch = (msg) => {
-  touchDown.value = false;
 };
 
 watchEffect(() => {
