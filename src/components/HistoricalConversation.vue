@@ -35,6 +35,8 @@ const emit = defineEmits(['message-sent']);
 
 const toArchive2 = computed(() => props.toArchive)
 
+
+
 watch(toArchive2, (newValue, oldValue) => {
   console.log('hhhh', toArchive2.value);
 
@@ -61,6 +63,10 @@ const sendMessage = () => {
 
 onMounted(() => {
     conversationWrapper.value.scrollTop = conversationWrapper.value.scrollHeight;
+
+    conversationWrapper.value.addEventListener('click', (event) => {
+           event.preventDefault();
+        });
 });
 
 
@@ -71,11 +77,11 @@ function handleWheel(event) {
         sendMessage()
     }
 
-    if (props.touchDown) {
-        conversationWrapper.value.addEventListener('click', (event) => {
-           event.preventDefault();
-        });
-    }
+    // if (props.touchDown) {
+    //     conversationWrapper.value.addEventListener('click', (event) => {
+    //        event.preventDefault();
+    //     });
+    // }
 }
 
 function addMessage(text) {

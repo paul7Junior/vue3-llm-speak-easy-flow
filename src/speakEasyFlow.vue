@@ -219,6 +219,8 @@ onMounted(() => {
   });
 
   document.getElementsByTagName("body")[0].addEventListener("wheel", (event) => {
+    console.log('currentBottomInVh.value--- ', currentBottomInVh.value)
+    console.log('VISIBLE_HEIGHT_VH.value--- ', VISIBLE_HEIGHT_VH.value)
     if (currentBottomInVh.value <= 100 - VISIBLE_HEIGHT_VH.value - 10) {
       enableScroll();
       handleScroll(event);
