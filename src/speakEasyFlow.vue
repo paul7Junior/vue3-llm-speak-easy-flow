@@ -27,6 +27,7 @@
               <div
                 v-for="(item, index) in divs"
                 class="item"
+                
                 :class="[{ human: item === 'human' }, { ai: item === 'ai' }]"
                 :contenteditable="index === focusedIndex ? true : false"
                 :key="item"
@@ -39,7 +40,7 @@
                 "
                 @keydown.enter.prevent="submit"
               >
-                {{ textDisplayed[index] }}
+              {{ textDisplayed[index] }}
               </div>
             </TransitionGroup>
           </div>

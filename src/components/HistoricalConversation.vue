@@ -36,16 +36,15 @@ watch(toArchive2, (newValue, oldValue) => {
 });
 
   const conversations = ref([
-    { id: 1, sender: 'person1', text: 'Hi, how are you?' },
-    { id: 2, sender: 'person2', text: 'I am good, thanks!' },
-    { id: 3, sender: 'person1', text: 'Great t8899o hear!' },
-    { id: 3, sender: 'person2', text: 'GreHSYUSYHUSAUSYAHUSYAHSYAUat to hear!' },
-    { id: 3, sender: 'person1', text: 'GreatJHSHSHSHHSS to hear!' },
-    { id: 3, sender: 'person3', text: 'AAAGreat to hear!' },
-    { id: 3, sender: 'person2', text: 'VVVVVGreat to hear!' },
-    { id: 3, sender: 'person1', text: 'Grfdsjfidsfsidjfdeat to hear!' },
-    { id: 3, sender: 'person3', text: 'GrdfjjfjjjJJJJJeat to hear!' },
-    { id: 3, sender: 'person1', text: 'NEW 111111 AAAAAAAGreaHHHHHHHt to hear!' }
+    { id: 1, sender: 'person1', text: "Hey " },
+    { id: 2, sender: 'person2', text: "Hey, how can I help you today?"},
+    { id: 3, sender: 'person1', text: "This a potential conversation between a user and an llm of your choice"},
+    { id: 3, sender: 'person2', text: "Great to hear!" },
+    { id: 3, sender: 'person1', text: "What's the meaning of life?" },
+    { id: 3, sender: 'person3', text: "42" },
+    { id: 3, sender: 'person2', text: "Should I join e/acc?" },
+    { id: 3, sender: 'person1', text: "You can't join it, you're already part of it. So stop thinking and accelerate, anon!" },
+    { id: 3, sender: 'person2', text: "First I need a coffee huh." }
   ]);
 
 onMounted(() => {
