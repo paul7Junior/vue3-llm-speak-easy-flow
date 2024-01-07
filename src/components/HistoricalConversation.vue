@@ -1,5 +1,5 @@
 <template>
-    <div ref="conversationWrapper" @wheel="handleWheel" :class="{ conversationwrapper: true }">
+    <div ref="conversationWrapper" :class="{ conversationwrapper: true }">
         
     <div class="conversation-container">
       <div
@@ -14,90 +14,45 @@
       </div>
     </div>
 </div>
-<!-- {{ touchDown }}
-<button @click="gg">fffff</button> -->
 </template>
   
 <script setup>
-import { ref, defineProps, defineEmits, onMounted, watch, watchEffect, computed } from 'vue';
-
-// const { touchDown, toArchive } = defineProps(['touchDown', 'toArchive']);
+import { ref, defineProps, onMounted, watch, computed } from 'vue';
 
 const props = defineProps({
-    touchDown: {
-    type: String,
-  },
   toArchive: {
     type: String,
   }
 })
 
-// const { toArchive } = defineProps(['toArchive']);
 const conversationWrapper = ref(null);
-const emit = defineEmits(['message-sent']);
-
-// const toArchive2 = ref(toArchive)
-// useContext().expose({ count })
-
-const toArchive2 = computed(() => {
-    return props.toArchive;
-})
-
+const toArchive2 = computed(() => props.toArchive)
 
 watch(toArchive2, (newValue, oldValue) => {
+
   if (newValue) {
     addMessage(toArchive2.value)
-    console.log('hhhh', toArchive2.value);
   }
 });
 
-// watch(() => toArchive2, (newText, oldText) => {
-//     console.log('jiijij')
-// //   if (newText !== oldText && newText) {
-// //     const newId = conversations.value.length > 0 ? conversations.value[conversations.value.length - 1].id + 1 : 1;
-// //     const newMessage = {
-// //       id: newId,
-// //       sender: 'newSender', // Adjust as needed
-// //       text: newText
-// //     };
-// //     conversations.value.push(newMessage);
-// //   }
-// });
-
-const sendMessage = () => {
-  emit('message-sent', 'Hello, Parent!');
-};
   const conversations = ref([
-    { id: 1, sender: 'person1', text: 'Hi, how are you?' },
-    { id: 2, sender: 'person2', text: 'I am good, thanks!' },
-    { id: 3, sender: 'person1', text: 'Great t8899o hear!' },
-    { id: 3, sender: 'person2', text: 'GreHSYUSYHUSAUSYAHUSYAHSYAUat to hear!' },
-    { id: 3, sender: 'person1', text: 'GreatJHSHSHSHHSS to hear!' },
-    { id: 3, sender: 'person3', text: 'AAAGreat to hear!' },
-    { id: 3, sender: 'person2', text: 'VVVVVGreat to hear!' },
-    { id: 3, sender: 'person1', text: 'Grfdsjfidsfsidjfdeat to hear!' },
-    { id: 3, sender: 'person3', text: 'GrdfjjfjjjJJJJJeat to hear!' },
-    { id: 3, sender: 'person1', text: 'GreaHHHHHHHt to hear!' }
+    { id: 1, sender: 'person1', text: "Hey " },
+    { id: 2, sender: 'person2', text: "Hey, how can I help you today?"},
+    { id: 3, sender: 'person1', text: "This a potential conversation between a user and an llm of your choice"},
+    { id: 3, sender: 'person2', text: "Great to hear!" },
+    { id: 3, sender: 'person1', text: "What's the meaning of life?" },
+    { id: 3, sender: 'person3', text: "42" },
+    { id: 3, sender: 'person2', text: "Should I join e/acc?" },
+    { id: 3, sender: 'person1', text: "You can't join it, you're already part of it. So stop thinking and accelerate, anon!" },
+    { id: 3, sender: 'person2', text: "First I need a coffee huh." }
   ]);
 
 onMounted(() => {
     conversationWrapper.value.scrollTop = conversationWrapper.value.scrollHeight;
-});
-
-
-function handleWheel(event) {
-
-    const isAtBottom = conversationWrapper.value.scrollTop + conversationWrapper.value.clientHeight >= conversationWrapper.value.scrollHeight;
-    if (isAtBottom) {
-        sendMessage()
-    }
-
-    if (props.touchDown) {
-        conversationWrapper.value.addEventListener('click', (event) => {
+    conversationWrapper.value.addEventListener('click', (event) => {
            event.preventDefault();
         });
-    }
-}
+});
 
 function addMessage(text) {
     const newId = conversations.value.length > 0 ? conversations.value[conversations.value.length - 1].id + 1 : 1;

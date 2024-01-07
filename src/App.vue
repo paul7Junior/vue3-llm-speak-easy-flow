@@ -1,28 +1,75 @@
 <template>
-<div>
-  <!-- <div style="position: absolute;top:0;left:0">
-
-    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
-      fsd</div>
-    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
-      fsd</div>
-    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
-      fsd</div>
-    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
-      fsd</div>
-    <div>dddd foidsfoids ufodsifu odi fsddddd foifdijosf diofj dosf diofj sojf diof dof si
-      dsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi fsddddd foidsfoids ufodsifu odi
-      fsd</div>
-  </div> -->
-  <speak-easy apiResponse=""></speak-easy>
-</div>
+  <div>
+    <p style="font-size: 100px;padding-top: 150px;">CHECK THAT OUT: TheDeepEngine.co</p>
+    <speak-easy
+      @clickSuggestion="clickSuggestion"
+      @input="tt"
+      @submit-event="startStream"
+      :apiResponse="llmResponseString"
+      :apiStatus="apiStatus"
+      :autoSuggestionData="autoSuggestionData"
+    ></speak-easy>
+  </div>
 </template>
 
 <script setup>
+import { ref } from "vue";
+
+const llmResponseString = ref("");
+const apiStatus = ref("");
+
+const autoSuggestionData = ref([
+  { name: "AAAddAAA", name2: "instanceOf", uuid: "description1" },
+  { name: "AAAffsAAA", name2: "instanceOf", uuid: "description2" },
+  { name: "AAAfdsfdAAA", name2: "instanceOf", uuid: "description3" },
+]);
+
+function tt(event) {
+  console.log(event);
+}
+
+function gggg() {
+  autoSuggestionData.value = [
+    { name: "ffff", name2: "inastanceOf", uuid: "description1" },
+  ];
+}
+
+function clickSuggestion(event) {
+  console.log(event);
+  autoSuggestionData.value = []
+}
+
+function startStream(submittedValue) {
+  setTimeout(() => {
+    let websocket;
+    websocket = new WebSocket("wss://localhost:8000/ws");
+
+    websocket.onopen = (event) => {
+      llmResponseString.value = "";
+      apiStatus.value = "";
+      websocket.send(JSON.stringify({ text: submittedValue }));
+    };
+
+    websocket.onmessage = (event) => {
+      llmResponseString.value = llmResponseString.value + event.data;
+    };
+
+    websocket.onerror = (error) => {
+      console.error("WebSocket Error:", error);
+    };
+
+    websocket.onclose = (event) => {
+      if (event.wasClean) {
+        apiStatus.value = "closed";
+        console.log(
+          `Connection closed cleanly, code=${event.code}, reason=${event.reason}`
+        );
+      } else {
+        console.error("Connection died");
+      }
+    };
+  }, 1000);
+}
 </script>
 
 <style scoped>
@@ -55,4 +102,5 @@ body {
     place-items: flex-start;
     flex-wrap: wrap;
   }
-}</style>
+}
+</style>
