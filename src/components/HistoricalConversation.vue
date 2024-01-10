@@ -61,7 +61,6 @@ function addMessage(text) {
     if (conversations.value.length > 0 && conversations.value[conversations.value.length - 1].sender === 'person1') {
         newSender = 'person2';
     }
-    console.log('ADDED message')
     conversations.value.push({
         id: newId,
         sender: newSender,

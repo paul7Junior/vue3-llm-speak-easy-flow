@@ -3,7 +3,6 @@
     <p style="font-size: 100px;padding-top: 150px;">CHECK THAT OUT: TheDeepEngine.co</p>
     <speak-easy
       @clickSuggestion="clickSuggestion"
-      @input="tt"
       @submit-event="startStream"
       :apiResponse="llmResponseString"
       :apiStatus="apiStatus"
@@ -24,18 +23,7 @@ const autoSuggestionData = ref([
   { name: "AAAfdsfdAAA", name2: "instanceOf", uuid: "description3" },
 ]);
 
-function tt(event) {
-  console.log(event);
-}
-
-function gggg() {
-  autoSuggestionData.value = [
-    { name: "ffff", name2: "inastanceOf", uuid: "description1" },
-  ];
-}
-
 function clickSuggestion(event) {
-  console.log(event);
   autoSuggestionData.value = []
 }
 
